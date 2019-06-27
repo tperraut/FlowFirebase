@@ -19,7 +19,7 @@ A big thanks to nmoskalenko for [RxFirebase](https://github.com/nmoskalenko/RxFi
 to [Kotlin Flow](https://kotlin.github.io/kotlinx.coroutines/kotlinx-coroutines-core/kotlinx.coroutines.flow/-flow/)
 
 # License
-   Copyright [2019] [Thomas Perraut]
+   Copyright 2019 Thomas Perraut
 
    Licensed under the Apache License, Version 2.0 (the "License");
    you may not use this file except in compliance with the License.
