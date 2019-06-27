@@ -4,13 +4,20 @@ apply plugin: 'kotlin-android'
 
 apply plugin: 'kotlin-android-extensions'
 
+def versionMajor = 1
+def versionMinor = 0
+def versionPatch = 0
+def versionBuild = buildNum
+def versionCodes = buildNum
+
 android {
     compileSdkVersion 28
     defaultConfig {
         minSdkVersion 19
         targetSdkVersion 28
-        versionCode 1
-        versionName "1.0"
+        versionCode versionCodes
+        versionName "${versionMajor}.${versionMinor}.${versionPatch}.${versionBuild}"
+        project.archivesBaseName = "${rootProject.name}-$versionName"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
     buildTypes {

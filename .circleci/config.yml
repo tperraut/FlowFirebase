@@ -1,10 +1,10 @@
 version: 2.1
 jobs:
-  # filter:
-  #   branches:
-  #     only:
-  #       - develop
-  #       - master
+  filter:
+    branches:
+      only:
+        - develop
+        - master
   build:
     working_directory: ~/code
     environment:
@@ -39,7 +39,7 @@ jobs:
           name: Run Lint
           command: ./gradlew lint
       - run:
-          name: build lib
+          name: Build lib
           command: ./gradlew assembleRelease
       - store_artifacts:
           path: app/build/outputs
