@@ -3,14 +3,15 @@ jobs:
   build:
     working_directory: ~/code
     environment:
-      - TERM: dumb
-      - MAX_HEAP_SIZE: 2048m
-      - ANDROID_COMPILE_VERSION: 28
-      - _JAVA_OPTS: -Xmx$MAX_HEAP_SIZE
+      TERM: dumb
+      MAX_HEAP_SIZE: 2048m
+      ANDROID_COMPILE_VERSION: 28
+      _JAVA_OPTS: -Xmx$MAX_HEAP_SIZE
     docker:
       - image: circleci/android:api-$ANDROID_COMPILE_VERSION-alpha
-    branches:
-      - only:
+    filters:
+      branches:
+        only:
           - master
     steps:
       - checkout
