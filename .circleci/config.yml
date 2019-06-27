@@ -1,11 +1,9 @@
 version: 2.1
 jobs:
-  filters:
+  build:
     branches:
       only:
-        - develop
         - master
-  build:
     working_directory: ~/code
     environment:
       - TERM: dumb

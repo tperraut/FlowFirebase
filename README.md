@@ -1,5 +1,5 @@
 [![Hex.pm](https://img.shields.io/hexpm/l/plug.svg)](http://www.apache.org/licenses/LICENSE-2.0) [![Platform](https://img.shields.io/badge/platform-android-green.svg)](http://developer.android.com/index.html)
-[![Build Status](https://circleci.com/gh/tperraut/workflows/FlowFirebase/tree/master.svg?style=shield)](https://circleci.com/gh/tperraut/workflows/FlowFirebase/tree/master)
+[![Build Status](https://circleci.com/gh/tperraut/workflows/FlowFirebase/tree/master.svg?style=svg)](https://circleci.com/gh/tperraut/workflows/FlowFirebase/tree/master)
 
 # FlowFirebase
 [Kotlin Flow](https://kotlin.github.io/kotlinx.coroutines/kotlinx-coroutines-core/kotlinx.coroutines.flow/-flow/)
