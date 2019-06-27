@@ -1,4 +1,6 @@
-[![Hex.pm](https://img.shields.io/hexpm/l/plug.svg)](http://www.apache.org/licenses/LICENSE-2.0) [![Platform](https://img.shields.io/badge/platform-android-green.svg)](http://developer.android.com/index.html)
+[![Hex.pm](https://img.shields.io/hexpm/l/plug.svg)](http://www.apache.org/licenses/LICENSE-2.0)
+[![Platform](https://img.shields.io/badge/platform-android-green.svg)](http://developer.android.com/index.html)
+[![Download](https://jitpack.io/v/tperraut/FlowFirebase.svg)](https://jitpack.io/#tperraut/FlowFirebase)
 [![CircleCI](https://circleci.com/gh/tperraut/FlowFirebase/tree/master.svg?style=svg)](https://circleci.com/gh/tperraut/FlowFirebase/tree/master)
 
 # FlowFirebase
@@ -13,6 +15,42 @@ TODO
 ##### Collecting list
 ##### Collecting map
 ### Storage
+
+# Download
+### Gradle
+Add this to your root build.gradle
+```groovy
+allprojects {
+	repositories {
+		...
+		maven { url 'https://jitpack.io' }
+	}
+}
+```
+Add the dependency
+```groovy
+dependencies {
+    implementation 'com.github.tperraut:FlowFirebase:Tag'
+}
+```
+### Maven
+Repo
+```xml
+<repositories>
+	<repository>
+	    <id>jitpack.io</id>
+	    <url>https://jitpack.io</url>
+	</repository>
+</repositories>
+```
+Add the dependency
+```xml
+<dependency>
+    <groupId>com.github.tperraut</groupId>
+    <artifactId>FlowFirebase</artifactId>
+    <version>Tag</version>
+</dependency>
+```
 
 # Credits
 A big thanks to nmoskalenko for [RxFirebase](https://github.com/nmoskalenko/RxFirebase) that I literally copy and adapt
