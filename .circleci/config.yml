@@ -1,6 +1,6 @@
 version: 2.1
 jobs:
-  filter:
+  filters:
     branches:
       only:
         - develop
