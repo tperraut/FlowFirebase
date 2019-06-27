@@ -34,7 +34,7 @@ jobs:
       - save_cache:
           paths:
             - ~/.gradle
-          key: jars-{{ checksum "Mercury/build.gradle" }}-{{ checksum  "Mercury/app/build.gradle" }}
+          key: jars-{{ checksum "build.gradle" }}-{{ checksum  "app/build.gradle" }}
       - run:
           name: Run Lint
           command: ./gradlew lint
