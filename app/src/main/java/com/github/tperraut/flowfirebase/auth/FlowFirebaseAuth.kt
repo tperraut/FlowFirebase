@@ -4,8 +4,7 @@ import com.github.tperraut.flowfirebase.helpers.asFlow
 import com.google.firebase.auth.*
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.flow
-import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.flow.flowViaChannel
 
 @FlowPreview
 object FlowFirebaseAuth {
@@ -36,7 +35,7 @@ object FlowFirebaseAuth {
         return firebaseAuth.sendPasswordResetEmail(email).asFlow()
     }
 
-    fun collectAuthState(firebaseAuth: FirebaseAuth): Flow<FirebaseUser?> = flow {
-        firebaseAuth.addAuthStateListener { runBlocking { emit(it.currentUser) } }
+    fun collectAuthState(firebaseAuth: FirebaseAuth): Flow<FirebaseUser?> = flowViaChannel { channel ->
+        firebaseAuth.addAuthStateListener { channel.offer(it.currentUser) }
     }
 }

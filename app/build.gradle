@@ -6,15 +6,15 @@ apply plugin: 'kotlin-android-extensions'
 
 def versionMajor = 1
 def versionMinor = 0
-def versionPatch = 0
+def versionPatch = 1
 def versionBuild = buildNum
 def versionCodes = buildNum
 
 android {
-    compileSdkVersion 28
+    compileSdkVersion 29
     defaultConfig {
         minSdkVersion 19
-        targetSdkVersion 28
+        targetSdkVersion 29
         versionCode versionCodes
         versionName "${versionMajor}.${versionMinor}.${versionPatch}.${versionBuild}"
         project.archivesBaseName = "${rootProject.name}-$versionName"
@@ -41,7 +41,7 @@ dependencies {
     implementation 'androidx.core:core-ktx:1.0.2'
 
     /* Firebase */
-    def firebase_version = "18.0.0"
+    def firebase_version = "19.0.0"
     implementation "com.google.firebase:firebase-auth:$firebase_version"
     implementation "com.google.firebase:firebase-database:$firebase_version"
     implementation "com.google.firebase:firebase-storage:$firebase_version"
