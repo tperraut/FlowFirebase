@@ -5,6 +5,7 @@ import com.google.firebase.auth.*
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.runBlocking
 
 @FlowPreview
 object FlowFirebaseAuth {
@@ -36,6 +37,6 @@ object FlowFirebaseAuth {
     }
 
     fun collectAuthState(firebaseAuth: FirebaseAuth): Flow<FirebaseUser?> = flow {
-        firebaseAuth.addAuthStateListener { suspend { emit(it.currentUser) } }
+        firebaseAuth.addAuthStateListener { runBlocking { emit(it.currentUser) } }
     }
 }

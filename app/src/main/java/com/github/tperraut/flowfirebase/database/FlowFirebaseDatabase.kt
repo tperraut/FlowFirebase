@@ -9,6 +9,7 @@ import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.runBlocking
 
 @FlowPreview
 object FlowFirebaseDatabase {
@@ -20,7 +21,7 @@ object FlowFirebaseDatabase {
             }
 
             override fun onDataChange(dataSnapshot: DataSnapshot) {
-                suspend { emit(dataSnapshot) }
+                runBlocking { emit(dataSnapshot) }
             }
 
         })
@@ -41,10 +42,10 @@ object FlowFirebaseDatabase {
             }
 
             override fun onDataChange(dataSnapshot: DataSnapshot) {
-                suspend {
+                runBlocking {
                     emit(dataSnapshot)
-                    query.removeEventListener(this)
                 }
+                query.removeEventListener(this)
             }
         })
     }
@@ -64,7 +65,7 @@ object FlowFirebaseDatabase {
             }
 
             override fun onChildMoved(dataSnapshot: DataSnapshot, previousChildName: String?) {
-                suspend {
+                runBlocking {
                     emit(
                         FlowFirebaseChildEvent(
                             dataSnapshot.key!!,
@@ -77,7 +78,7 @@ object FlowFirebaseDatabase {
             }
 
             override fun onChildChanged(dataSnapshot: DataSnapshot, previousChildName: String?) {
-                suspend {
+                runBlocking {
                     emit(
                         FlowFirebaseChildEvent(
                             dataSnapshot.key!!,
@@ -90,7 +91,7 @@ object FlowFirebaseDatabase {
             }
 
             override fun onChildAdded(dataSnapshot: DataSnapshot, previousChildName: String?) {
-                suspend {
+                runBlocking {
                     emit(
                         FlowFirebaseChildEvent(
                             dataSnapshot.key!!,
@@ -103,7 +104,7 @@ object FlowFirebaseDatabase {
             }
 
             override fun onChildRemoved(dataSnapshot: DataSnapshot) {
-                suspend {
+                runBlocking {
                     emit(
                         FlowFirebaseChildEvent(
                             dataSnapshot.key!!,
