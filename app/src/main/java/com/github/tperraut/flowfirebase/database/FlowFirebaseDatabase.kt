@@ -42,7 +42,6 @@ object FlowFirebaseDatabase {
             override fun onDataChange(dataSnapshot: DataSnapshot) {
                 query.removeEventListener(this)
                 channel.offer(dataSnapshot)
-                channel.close()
             }
         })
     }
@@ -55,56 +54,60 @@ object FlowFirebaseDatabase {
         return collectSingleValueEvent(query, DataSnapshotMapper.of(clazz))
     }
 
-    fun collectChildEvent(query: Query): Flow<FlowFirebaseChildEvent<DataSnapshot>> = flowViaChannel { channel ->
-        query.addChildEventListener(object : ChildEventListener {
-            override fun onCancelled(error: DatabaseError) {
-                throw FlowFirebaseDataException(error)
-            }
+    fun collectChildEvent(query: Query): Flow<FlowFirebaseChildEvent<DataSnapshot>> =
+        flowViaChannel { channel ->
+            query.addChildEventListener(object : ChildEventListener {
+                override fun onCancelled(error: DatabaseError) {
+                    throw FlowFirebaseDataException(error)
+                }
 
-            override fun onChildMoved(dataSnapshot: DataSnapshot, previousChildName: String?) {
-                channel.offer(
-                    FlowFirebaseChildEvent(
-                        dataSnapshot.key!!,
-                        dataSnapshot,
-                        Event.EventType.CHILD_MOVED,
-                        previousChildName
+                override fun onChildMoved(dataSnapshot: DataSnapshot, previousChildName: String?) {
+                    channel.offer(
+                        FlowFirebaseChildEvent(
+                            dataSnapshot.key!!,
+                            dataSnapshot,
+                            Event.EventType.CHILD_MOVED,
+                            previousChildName
+                        )
                     )
-                )
-            }
+                }
 
-            override fun onChildChanged(dataSnapshot: DataSnapshot, previousChildName: String?) {
-                channel.offer(
-                    FlowFirebaseChildEvent(
-                        dataSnapshot.key!!,
-                        dataSnapshot,
-                        Event.EventType.CHILD_CHANGED,
-                        previousChildName
+                override fun onChildChanged(
+                    dataSnapshot: DataSnapshot,
+                    previousChildName: String?
+                ) {
+                    channel.offer(
+                        FlowFirebaseChildEvent(
+                            dataSnapshot.key!!,
+                            dataSnapshot,
+                            Event.EventType.CHILD_CHANGED,
+                            previousChildName
+                        )
                     )
-                )
-            }
+                }
 
-            override fun onChildAdded(dataSnapshot: DataSnapshot, previousChildName: String?) {
-                channel.offer(
-                    FlowFirebaseChildEvent(
-                        dataSnapshot.key!!,
-                        dataSnapshot,
-                        Event.EventType.CHILD_ADDED,
-                        previousChildName
+                override fun onChildAdded(dataSnapshot: DataSnapshot, previousChildName: String?) {
+                    channel.offer(
+                        FlowFirebaseChildEvent(
+                            dataSnapshot.key!!,
+                            dataSnapshot,
+                            Event.EventType.CHILD_ADDED,
+                            previousChildName
+                        )
                     )
-                )
-            }
+                }
 
-            override fun onChildRemoved(dataSnapshot: DataSnapshot) {
-                channel.offer(
-                    FlowFirebaseChildEvent(
-                        dataSnapshot.key!!,
-                        dataSnapshot,
-                        Event.EventType.CHILD_REMOVED
+                override fun onChildRemoved(dataSnapshot: DataSnapshot) {
+                    channel.offer(
+                        FlowFirebaseChildEvent(
+                            dataSnapshot.key!!,
+                            dataSnapshot,
+                            Event.EventType.CHILD_REMOVED
+                        )
                     )
-                )
-            }
-        })
-    }
+                }
+            })
+        }
 
     fun <T> collectChildEvent(
         query: Query,

@@ -6,9 +6,6 @@ import kotlinx.coroutines.flow.flowViaChannel
 
 @FlowPreview
 fun <TResult> Task<TResult>.asFlow() = flowViaChannel<TResult> { channel ->
-    addOnSuccessListener {
-        channel.offer(it)
-        channel.close()
-    }
+    addOnSuccessListener { channel.offer(it) }
     addOnFailureListener { channel.close(it) }
 }
