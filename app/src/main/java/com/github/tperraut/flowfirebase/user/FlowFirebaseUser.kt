@@ -5,10 +5,10 @@ import com.google.firebase.auth.AuthCredential
 import com.google.firebase.auth.AuthResult
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.auth.UserProfileChangeRequest
-import kotlinx.coroutines.FlowPreview
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
 
-@FlowPreview
+@ExperimentalCoroutinesApi
 object FlowFirebaseUser {
 
     fun updateEmail(firebaseUser: FirebaseUser, email: String): Flow<Void> = firebaseUser.updateEmail(email).asFlow()

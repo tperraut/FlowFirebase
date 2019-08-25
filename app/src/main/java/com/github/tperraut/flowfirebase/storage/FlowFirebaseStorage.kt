@@ -3,12 +3,12 @@ package com.github.tperraut.flowfirebase.storage
 import android.net.Uri
 import com.github.tperraut.flowfirebase.helpers.asFlow
 import com.google.firebase.storage.*
-import kotlinx.coroutines.FlowPreview
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
 import java.io.File
 import java.io.InputStream
 
-@FlowPreview
+@ExperimentalCoroutinesApi
 object FlowFirebaseStorage {
 
     fun getBytes(storageRef: StorageReference, maxDownloadSize: Long): Flow<ByteArray> {

@@ -3,11 +3,11 @@ package com.github.tperraut.flowfirebase.functions
 import com.github.tperraut.flowfirebase.helpers.asFlow
 import com.google.firebase.functions.FirebaseFunctions
 import com.google.firebase.functions.HttpsCallableResult
-import kotlinx.coroutines.FlowPreview
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
 import java.util.concurrent.TimeUnit
 
-@FlowPreview
+@ExperimentalCoroutinesApi
 object FlowFirebaseFunctions {
 
     fun getHttpsCallable(

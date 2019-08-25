@@ -2,20 +2,29 @@ package com.github.tperraut.flowfirebase.auth
 
 import com.github.tperraut.flowfirebase.helpers.asFlow
 import com.google.firebase.auth.*
-import kotlinx.coroutines.FlowPreview
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.flowViaChannel
+import kotlinx.coroutines.flow.callbackFlow
 
-@FlowPreview
+@ExperimentalCoroutinesApi
 object FlowFirebaseAuth {
 
-    fun signInAnonymously(firebaseAuth: FirebaseAuth): Flow<AuthResult> = firebaseAuth.signInAnonymously().asFlow()
+    fun signInAnonymously(firebaseAuth: FirebaseAuth): Flow<AuthResult> =
+        firebaseAuth.signInAnonymously().asFlow()
 
-    fun signInWithEmailAndPassword(firebaseAuth: FirebaseAuth, email: String, password: String): Flow<AuthResult> {
+    fun signInWithEmailAndPassword(
+        firebaseAuth: FirebaseAuth,
+        email: String,
+        password: String
+    ): Flow<AuthResult> {
         return firebaseAuth.signInWithEmailAndPassword(email, password).asFlow()
     }
 
-    fun signInWithCredential(firebaseAuth: FirebaseAuth, credential: AuthCredential): Flow<AuthResult> {
+    fun signInWithCredential(
+        firebaseAuth: FirebaseAuth,
+        credential: AuthCredential
+    ): Flow<AuthResult> {
         return firebaseAuth.signInWithCredential(credential).asFlow()
     }
 
@@ -23,11 +32,18 @@ object FlowFirebaseAuth {
         return firebaseAuth.signInWithCustomToken(token).asFlow()
     }
 
-    fun createUserWithEmailAndPassword(firebaseAuth: FirebaseAuth, email: String, password: String): Flow<AuthResult> {
+    fun createUserWithEmailAndPassword(
+        firebaseAuth: FirebaseAuth,
+        email: String,
+        password: String
+    ): Flow<AuthResult> {
         return firebaseAuth.createUserWithEmailAndPassword(email, password).asFlow()
     }
 
-    fun fetchSignInMethodForEmail(firebaseAuth: FirebaseAuth, email: String): Flow<SignInMethodQueryResult> {
+    fun fetchSignInMethodForEmail(
+        firebaseAuth: FirebaseAuth,
+        email: String
+    ): Flow<SignInMethodQueryResult> {
         return firebaseAuth.fetchSignInMethodsForEmail(email).asFlow()
     }
 
@@ -35,7 +51,9 @@ object FlowFirebaseAuth {
         return firebaseAuth.sendPasswordResetEmail(email).asFlow()
     }
 
-    fun collectAuthState(firebaseAuth: FirebaseAuth): Flow<FirebaseUser?> = flowViaChannel { channel ->
-        firebaseAuth.addAuthStateListener { channel.offer(it.currentUser) }
+    fun collectAuthState(firebaseAuth: FirebaseAuth): Flow<FirebaseUser?> = callbackFlow {
+        val listener = FirebaseAuth.AuthStateListener { auth -> offer(auth.currentUser) }
+        firebaseAuth.addAuthStateListener(listener)
+        awaitClose { firebaseAuth.removeAuthStateListener(listener) }
     }
 }
