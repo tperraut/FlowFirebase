@@ -44,13 +44,11 @@ object FlowFirebaseDatabase {
             }
 
             override fun onDataChange(dataSnapshot: DataSnapshot) {
-                if (!isClosedForSend) {
-                    offer(dataSnapshot)
-                    close()
-                }
+                offer(dataSnapshot)
+                close()
             }
         }
-        query.addValueEventListener(listener)
+        query.addListenerForSingleValueEvent(listener)
         awaitClose { query.removeEventListener(listener) }
     }
 
