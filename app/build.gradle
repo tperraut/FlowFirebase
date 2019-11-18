@@ -6,7 +6,7 @@ apply plugin: 'kotlin-android-extensions'
 
 def versionMajor = 1
 def versionMinor = 0
-def versionPatch = 1
+def versionPatch = 2
 def versionBuild = buildNum
 def versionCodes = buildNum
 
@@ -17,7 +17,7 @@ android {
         targetSdkVersion 29
         versionCode versionCodes
         versionName "${versionMajor}.${versionMinor}.${versionPatch}.${versionBuild}"
-        project.archivesBaseName = "${rootProject.name}-$versionName"
+        archivesBaseName = "${rootProject.name}-$versionName"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
     buildTypes {
