@@ -2,9 +2,10 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/Documents-FlowFirebase.iml" filepath="$PROJECT_DIR$/Documents-FlowFirebase.iml" />
+      <module fileurl="file://$PROJECT_DIR$/Documents-Perso-FlowFirebase.iml" filepath="$PROJECT_DIR$/Documents-Perso-FlowFirebase.iml" />
       <module fileurl="file://$PROJECT_DIR$/FlowFirebase.iml" filepath="$PROJECT_DIR$/FlowFirebase.iml" />
       <module fileurl="file://$PROJECT_DIR$/app/FlowFirebase-app.iml" filepath="$PROJECT_DIR$/app/FlowFirebase-app.iml" />
+      <module fileurl="file://$PROJECT_DIR$/Perso-FlowFirebase.iml" filepath="$PROJECT_DIR$/Perso-FlowFirebase.iml" />
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
     </modules>
   </component>

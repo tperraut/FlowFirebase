@@ -3,6 +3,7 @@ package com.github.tperraut.flowfirebase.database
 import com.github.tperraut.flowfirebase.database.mapper.DataSnapshotMapper
 import com.github.tperraut.flowfirebase.database.model.FlowFirebaseChildEvent
 import com.github.tperraut.flowfirebase.exceptions.FlowFirebaseDataException
+import com.github.tperraut.flowfirebase.helpers.safeOffer
 import com.google.firebase.database.*
 import com.google.firebase.database.core.view.Event
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -12,118 +13,185 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
 import kotlinx.coroutines.flow.map
 
+/**
+ * Observe a query as a [Flow] emitting a value on every changes
+ */
 @ExperimentalCoroutinesApi
-object FlowFirebaseDatabase {
-
-    fun collectValueEvent(query: Query): Flow<DataSnapshot> = callbackFlow {
-        val listener = object : ValueEventListener {
-            override fun onCancelled(error: DatabaseError) {
-                cancel(error.message, FlowFirebaseDataException(error))
-            }
-
-            override fun onDataChange(dataSnapshot: DataSnapshot) {
-                offer(dataSnapshot)
-            }
+fun Query.collectDefaultValueEvent(): Flow<DataSnapshot> = callbackFlow {
+    val listener = object : ValueEventListener {
+        override fun onCancelled(error: DatabaseError) {
+            cancel(error.message, FlowFirebaseDataException(error))
         }
-        query.addValueEventListener(listener)
-        awaitClose { query.removeEventListener(listener) }
-    }
 
-    fun <T> collectValueEvent(query: Query, mapper: suspend (DataSnapshot) -> T): Flow<T> {
-        return collectValueEvent(query).map(mapper)
-    }
-
-    fun <T> collectValueEvent(query: Query, clazz: Class<T>): Flow<T> {
-        return collectValueEvent(query, DataSnapshotMapper.of(clazz))
-    }
-
-    fun collectSingleValueEvent(query: Query): Flow<DataSnapshot> = callbackFlow {
-        val listener = object : ValueEventListener {
-            override fun onCancelled(error: DatabaseError) {
-                cancel(error.message, FlowFirebaseDataException(error))
-            }
-
-            override fun onDataChange(dataSnapshot: DataSnapshot) {
-                offer(dataSnapshot)
-                close()
-            }
+        override fun onDataChange(dataSnapshot: DataSnapshot) {
+            safeOffer(dataSnapshot)
         }
-        query.addListenerForSingleValueEvent(listener)
-        awaitClose { query.removeEventListener(listener) }
     }
+    addValueEventListener(listener)
+    awaitClose { removeEventListener(listener) }
+}
 
-    fun <T> collectSingleValueEvent(query: Query, mapper: suspend (DataSnapshot) -> T): Flow<T> {
-        return collectSingleValueEvent(query).map(mapper)
-    }
+/**
+ * Observe a query as a [Flow] emitting a value on every changes mapping the result with the given mapper
+ * @param mapper the function to transform a [DataSnapshot] to a type [T]
+ */
+@ExperimentalCoroutinesApi
+fun <T> Query.collectValueEvent(mapper: (DataSnapshot) -> T): Flow<T> {
+    return collectDefaultValueEvent().map { mapper(it) }
+}
 
-    fun <T> collectSingleValueEvent(query: Query, clazz: Class<T>): Flow<T> {
-        return collectSingleValueEvent(query, DataSnapshotMapper.of(clazz))
-    }
+/**
+ * Observe a query as a [Flow] emitting a value on every changes mapping the result in a suspending way with the given
+ * mapper
+ * @param mapper the suspend function to transform a [DataSnapshot] to a type [T]
+ */
+@ExperimentalCoroutinesApi
+fun <T> Query.collectValueEvent(mapper: suspend (DataSnapshot) -> T): Flow<T> {
+    return collectDefaultValueEvent().map(mapper)
+}
 
-    fun collectChildEvent(query: Query): Flow<FlowFirebaseChildEvent<DataSnapshot>> = callbackFlow {
-        val listener = object : ChildEventListener {
-            override fun onCancelled(error: DatabaseError) {
-                cancel(error.message, FlowFirebaseDataException(error))
-            }
+/**
+ * Observe a query as a [Flow] emitting a value on every changes mapping the result with the given type [T]
+ */
+@ExperimentalCoroutinesApi
+inline fun <reified T> Query.collectValueEvent(): Flow<T> {
+    return collectValueEvent(DataSnapshotMapper.of())
+}
 
-            override fun onChildMoved(dataSnapshot: DataSnapshot, previousChildName: String?) {
-                offer(
-                    FlowFirebaseChildEvent(
-                        dataSnapshot.key!!,
-                        dataSnapshot,
-                        Event.EventType.CHILD_MOVED,
-                        previousChildName
-                    )
-                )
-            }
-
-            override fun onChildChanged(
-                dataSnapshot: DataSnapshot,
-                previousChildName: String?
-            ) {
-                offer(
-                    FlowFirebaseChildEvent(
-                        dataSnapshot.key!!,
-                        dataSnapshot,
-                        Event.EventType.CHILD_CHANGED,
-                        previousChildName
-                    )
-                )
-            }
-
-            override fun onChildAdded(dataSnapshot: DataSnapshot, previousChildName: String?) {
-                offer(
-                    FlowFirebaseChildEvent(
-                        dataSnapshot.key!!,
-                        dataSnapshot,
-                        Event.EventType.CHILD_ADDED,
-                        previousChildName
-                    )
-                )
-            }
-
-            override fun onChildRemoved(dataSnapshot: DataSnapshot) {
-                offer(
-                    FlowFirebaseChildEvent(
-                        dataSnapshot.key!!,
-                        dataSnapshot,
-                        Event.EventType.CHILD_REMOVED
-                    )
-                )
-            }
+/**
+ * Get the value of a query as a [Flow] emitting a value only once before completing
+ */
+@ExperimentalCoroutinesApi
+fun Query.collectDefaultSingleValueEvent(): Flow<DataSnapshot> = callbackFlow {
+    val listener = object : ValueEventListener {
+        override fun onCancelled(error: DatabaseError) {
+            cancel(error.message, FlowFirebaseDataException(error))
         }
-        query.addChildEventListener(listener)
-        awaitClose { query.removeEventListener(listener) }
-    }
 
-    fun <T> collectChildEvent(
-        query: Query,
-        mapper: suspend (FlowFirebaseChildEvent<DataSnapshot>) -> FlowFirebaseChildEvent<T>
-    ): Flow<FlowFirebaseChildEvent<T>> {
-        return collectChildEvent(query).map(mapper)
+        override fun onDataChange(dataSnapshot: DataSnapshot) {
+            safeOffer(dataSnapshot)
+            close()
+        }
     }
+    addListenerForSingleValueEvent(listener)
+    awaitClose { removeEventListener(listener) }
+}
 
-    fun <T> collectChildEvent(query: Query, clazz: Class<T>): Flow<FlowFirebaseChildEvent<T>> {
-        return collectChildEvent(query, DataSnapshotMapper.ofChild(clazz))
+/**
+ * Get the value of a query as a [Flow] emitting a value only once before completing and mapping the result with the
+ * given mapper
+ */
+@ExperimentalCoroutinesApi
+fun <T> Query.collectSingleValueEvent(mapper: (DataSnapshot) -> T): Flow<T> {
+    return collectDefaultSingleValueEvent().map { mapper(it) }
+}
+
+/**
+ * Get the value of a query as a [Flow] emitting a value only once before completing and mapping the result in a
+ * suspending way with the given mapper
+ */
+@ExperimentalCoroutinesApi
+fun <T> Query.collectSingleValueEvent(mapper: suspend (DataSnapshot) -> T): Flow<T> {
+    return collectDefaultSingleValueEvent().map(mapper)
+}
+
+/**
+ * Get the value of a query as a [Flow] emitting a value only once before completing and mapping the result with the
+ * given type [T]
+ */
+@ExperimentalCoroutinesApi
+inline fun <reified T> Query.collectSingleValueEvent(): Flow<T> {
+    return collectSingleValueEvent(DataSnapshotMapper.of())
+}
+
+/**
+ * Observe a query children as a [Flow] emitting a value on every child event and wrapping the result in a
+ * [FlowFirebaseChildEvent]
+ */
+@ExperimentalCoroutinesApi
+fun Query.collectDefaultChildEvent(): Flow<FlowFirebaseChildEvent<DataSnapshot>> = callbackFlow {
+    val listener = object : ChildEventListener {
+        override fun onCancelled(error: DatabaseError) {
+            cancel(error.message, FlowFirebaseDataException(error))
+        }
+
+        override fun onChildMoved(dataSnapshot: DataSnapshot, previousChildName: String?) {
+            safeOffer(
+                FlowFirebaseChildEvent(
+                    dataSnapshot.key!!,
+                    dataSnapshot,
+                    Event.EventType.CHILD_MOVED,
+                    previousChildName
+                )
+            )
+        }
+
+        override fun onChildChanged(
+            dataSnapshot: DataSnapshot,
+            previousChildName: String?
+        ) {
+            safeOffer(
+                FlowFirebaseChildEvent(
+                    dataSnapshot.key!!,
+                    dataSnapshot,
+                    Event.EventType.CHILD_CHANGED,
+                    previousChildName
+                )
+            )
+        }
+
+        override fun onChildAdded(dataSnapshot: DataSnapshot, previousChildName: String?) {
+            safeOffer(
+                FlowFirebaseChildEvent(
+                    dataSnapshot.key!!,
+                    dataSnapshot,
+                    Event.EventType.CHILD_ADDED,
+                    previousChildName
+                )
+            )
+        }
+
+        override fun onChildRemoved(dataSnapshot: DataSnapshot) {
+            safeOffer(
+                FlowFirebaseChildEvent(
+                    dataSnapshot.key!!,
+                    dataSnapshot,
+                    Event.EventType.CHILD_REMOVED
+                )
+            )
+        }
     }
+    addChildEventListener(listener)
+    awaitClose { removeEventListener(listener) }
+}
+
+/**
+ * Observe a query children as a [Flow] emitting a value on every child event and wrapping the result in a
+ * [FlowFirebaseChildEvent] and mapping the result with the given mapper
+ */
+@ExperimentalCoroutinesApi
+fun <T> Query.collectChildEvent(
+    mapper: (FlowFirebaseChildEvent<DataSnapshot>) -> FlowFirebaseChildEvent<T>
+): Flow<FlowFirebaseChildEvent<T>> {
+    return collectDefaultChildEvent().map { mapper(it) }
+}
+
+/**
+ * Observe a query children as a [Flow] emitting a value on every child event and wrapping the result in a
+ * [FlowFirebaseChildEvent] and mapping the result in a suspending way with the given mapper
+ */
+@ExperimentalCoroutinesApi
+fun <T> Query.collectChildEvent(
+    mapper: suspend (FlowFirebaseChildEvent<DataSnapshot>) -> FlowFirebaseChildEvent<T>
+): Flow<FlowFirebaseChildEvent<T>> {
+    return collectDefaultChildEvent().map(mapper)
+}
+
+/**
+ * Observe a query children as a [Flow] emitting a value on every child event and wrapping the result in a
+ * [FlowFirebaseChildEvent] and mapping the result with the given type [T]
+ */
+@ExperimentalCoroutinesApi
+inline fun <reified T> Query.collectChildEvent(): Flow<FlowFirebaseChildEvent<T>> {
+    return collectChildEvent(DataSnapshotMapper.ofChild())
 }

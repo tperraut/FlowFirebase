@@ -5,12 +5,17 @@ import com.google.firebase.remoteconfig.FirebaseRemoteConfig
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
 
+/**
+ * Fetch [FirebaseRemoteConfig] and convert the Google Task to a [Flow] emitting [Void] if the task succeed before
+ * completing or cancelling if it failed
+ */
 @ExperimentalCoroutinesApi
-object FlowFirebaseConfig {
+fun FirebaseRemoteConfig.fetchAsFlow(): Flow<Void> = fetch().asFlow()
 
-    fun fetch(config: FirebaseRemoteConfig): Flow<Void> = config.fetch().asFlow()
-
-    fun fetch(config: FirebaseRemoteConfig, cacheExpirationSeconds: Long): Flow<Void> {
-        return config.fetch(cacheExpirationSeconds).asFlow()
-    }
-}
+/**
+ * Fetch [FirebaseRemoteConfig] with cache expiration time in second and convert the Google Task to a [Flow] emitting
+ * [Void] if the task succeed before completing or cancelling if it failed
+ * @param cacheExpirationSeconds the cache expiration time in second
+ */
+@ExperimentalCoroutinesApi
+fun FirebaseRemoteConfig.fetchAsFlow(cacheExpirationSeconds: Long): Flow<Void> = fetch(cacheExpirationSeconds).asFlow()
