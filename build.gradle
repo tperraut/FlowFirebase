@@ -5,14 +5,14 @@ buildscript {
     ext.versionNum = ext.isCi ? System.getenv('VERSION_NUM').toString() : "2.5.5"
     ext.buildNum = ext.isCi ? System.getenv("BUILD_NUM").toInteger() : 99999
     project.logger.error("isCi: ${ext.isCi} | version: ${ext.versionNum} | buildNum: ${ext.buildNum}")
-    ext.kotlin_version = '1.4.32'
+    ext.kotlin_version = '1.5.30'
     repositories {
         google()
         mavenCentral()
     }
     dependencies {
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
-        classpath 'com.android.tools.build:gradle:3.5.4'
+        classpath 'com.android.tools.build:gradle:7.0.2'
         // NOTE: Do not place your application dependencies here; they belong
         // in the individual module build.gradle files
     }
