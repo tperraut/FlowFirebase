@@ -2,8 +2,7 @@ apply plugin: 'com.android.library'
 
 apply plugin: 'kotlin-android'
 
-def versionMajor = 1
-def versionMinor = 0
+def versionNumber = versionNum
 def versionBuild = buildNum
 def versionCodes = buildNum
 
@@ -13,7 +12,7 @@ android {
         minSdkVersion 19
         targetSdkVersion 30
         versionCode versionCodes
-        versionName "${versionMajor}.${versionMinor}.${versionBuild}"
+        versionName "${versionNumber}"
         archivesBaseName = "${rootProject.name}-$versionName"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }

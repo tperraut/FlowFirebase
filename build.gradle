@@ -1,9 +1,10 @@
 // Top-level build file where you can add configuration options common to all sub-projects/modules.
 
 buildscript {
-    ext.isCi = System.getenv('CIRCLECI') ? System.getenv('CIRCLECI').toBoolean() : false
-    ext.buildNum = System.getenv("CIRCLE_BUILD_NUM") ? System.getenv("CIRCLE_BUILD_NUM").toInteger() : 999999
-    project.logger.error("isCi: " + ext.isCi + " | buildNum: " + ext.buildNum)
+    ext.isCi = System.getenv('CI') ? System.getenv('CI').toBoolean() : false
+    ext.versionNum = ext.isCi ? System.getenv('VERSION_NUM').toString() : "2.5.5"
+    ext.buildNum = ext.isCi ? System.getenv("BUILD_NUM").toInteger() : 99999
+    project.logger.error("isCi: ${ext.isCi} | version: ${ext.versionNum} | buildNum: ${ext.buildNum}")
     ext.kotlin_version = '1.4.32'
     repositories {
         google()
