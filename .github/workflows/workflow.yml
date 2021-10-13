@@ -57,10 +57,11 @@ jobs:
           key: jars-{{ hashFiles("build.gradle") }}-{{ hashFiles("app/build.gradle") }}
           restore-keys: jars-
 
+      - name: Download Dependencies
+        run: ./gradlew androidDependencies
+
       - name: Build
-        run: |
-          - ./gradlew lint
-          - ./gradlew assembleRelease
+        run: ./gradlew lint && ./gradlew assembleRelease
 
       - name: Make Github Release
         uses: softprops/action-gh-release@v1
