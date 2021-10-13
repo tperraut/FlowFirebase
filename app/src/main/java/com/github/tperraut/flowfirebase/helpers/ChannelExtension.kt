@@ -12,7 +12,7 @@ import kotlinx.coroutines.channels.SendChannel
 fun <E> SendChannel<E>.safeOffer(value: E): Boolean {
     if (isClosedForSend) return false
     return try {
-        offer(value)
+        trySend(value).isSuccess
     } catch (e: CancellationException) {
         false
     }
