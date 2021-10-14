@@ -21,6 +21,19 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
     }
+    afterEvaluate {
+        publishing {
+            publications {
+                release(MavenPublication) {
+                    from components.release
+
+                    groupId = "com.github.tperraut"
+                    artifactId = rootProject.name.toLowerCase()
+                    version = versionNumber
+                }
+            }
+        }
+    }
 }
 
 dependencies {
