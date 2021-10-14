@@ -3,16 +3,14 @@ apply plugin: 'com.android.library'
 apply plugin: 'kotlin-android'
 
 def versionNumber = versionNum
-def versionCodes = buildNum
 
 android {
     compileSdkVersion 30
     defaultConfig {
         minSdkVersion 19
         targetSdkVersion 30
-        versionCode versionCodes
-        versionName "${versionNumber}"
-        archivesBaseName = "${rootProject.name}-$versionName"
+        versionName versionNumber
+        archivesBaseName = "${rootProject.name}-$versionNumber"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
     buildTypes {

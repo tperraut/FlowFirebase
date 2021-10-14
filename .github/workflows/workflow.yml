@@ -30,16 +30,13 @@ jobs:
     needs: tag
     runs-on: ubuntu-latest
     env:
-      VERSION_NUM: ${{ needs.tag.outputs.version }}
+      VERSION: ${{ needs.tag.outputs.version }}
     steps:
       - name: Checkout Repo
         uses: actions/checkout@v2
 
-      - name: Setup Env
-        run: echo "BUILD_NUM=${{ github.run_number }}" >> $GITHUB_ENV
-
       - name: Version Infos
-        run: echo $VERSION_NUM && echo $BUILD_NUM && echo '${{ needs.tag.outputs.changelog }}'
+        run: echo $VERSION && echo '${{ needs.tag.outputs.changelog }}'
 
       - name: Update Changelogs
         run: echo '${{ needs.tag.outputs.changelog }}' > release_note.txt

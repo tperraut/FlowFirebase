@@ -2,9 +2,8 @@
 
 buildscript {
     ext.isCi = System.getenv('CI') ? System.getenv('CI').toBoolean() : false
-    ext.versionNum = ext.isCi ? System.getenv('VERSION_NUM').toString() : "2.5.5"
-    ext.buildNum = ext.isCi ? System.getenv("BUILD_NUM").toInteger() : 99999
-    project.logger.error("isCi: ${ext.isCi} | version: ${ext.versionNum} | buildNum: ${ext.buildNum}")
+    ext.versionNum = ext.isCi ? System.getenv('VERSION').toString().replace("v", "") : "1.0.0"
+    project.logger.error("isCi: ${ext.isCi} | version: ${ext.versionNum}")
     ext.kotlin_version = '1.5.30'
     repositories {
         google()
