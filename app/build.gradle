@@ -2,6 +2,8 @@ apply plugin: 'com.android.library'
 
 apply plugin: 'kotlin-android'
 
+apply plugin: 'maven-publish'
+
 def versionNumber = versionNum
 
 android {
@@ -17,6 +19,19 @@ android {
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+        }
+    }
+    afterEvaluate {
+        publishing {
+            publications {
+                release(MavenPublication) {
+                    from components.release
+
+                    groupId = "com.github.tperraut"
+                    artifactId = rootProject.name.toLowerCase()
+                    version = versionNumber
+                }
+            }
         }
     }
 }
