@@ -2,23 +2,20 @@
 
 buildscript {
     ext.isCi = System.getenv('CI') ? System.getenv('CI').toBoolean() : false
-    ext.versionNum = ext.isCi ? System.getenv('VERSION_NUM').toString() : "2.5.5"
-    ext.buildNum = ext.isCi ? System.getenv("BUILD_NUM").toInteger() : 99999
-    project.logger.error("isCi: ${ext.isCi} | version: ${ext.versionNum} | buildNum: ${ext.buildNum}")
-    ext.kotlin_version = '1.5.30'
+    ext.versionNum = ext.isCi ? System.getenv('VERSION').toString().replace("v", "") : "1.0.0"
+    project.logger.error("isCi: ${ext.isCi} | version: ${ext.versionNum}")
+    ext.kotlin_version = '1.7.10'
     repositories {
         google()
         mavenCentral()
     }
     dependencies {
+        classpath 'com.android.tools.build:gradle:7.2.1'
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
-        classpath 'com.android.tools.build:gradle:7.0.2'
-        // NOTE: Do not place your application dependencies here; they belong
-        // in the individual module build.gradle files
     }
 }
 
-allprojects {
+subprojects {
     repositories {
         google()
         mavenCentral()
