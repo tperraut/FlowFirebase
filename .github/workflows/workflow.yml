@@ -81,6 +81,6 @@ jobs:
         if: ${{ failure() || cancelled() }}
         env:
           GITHUB_TOKEN: ${{ github.token }}
-        uses: dev-drprasad/delete-tag-and-release@v0.2.0
+        uses: dev-drprasad/delete-tag-and-release@v0.2.1
         with:
           tag_name: ${{ needs.tag.outputs.tag }}
