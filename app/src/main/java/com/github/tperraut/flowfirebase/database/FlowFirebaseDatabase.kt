@@ -1,5 +1,6 @@
 package com.github.tperraut.flowfirebase.database
 
+import android.annotation.SuppressLint
 import com.github.tperraut.flowfirebase.database.mapper.DataSnapshotMapper
 import com.github.tperraut.flowfirebase.database.model.FlowFirebaseChildEvent
 import com.github.tperraut.flowfirebase.exceptions.FlowFirebaseDataException
@@ -109,6 +110,7 @@ inline fun <reified T> Query.collectSingleValueEvent(): Flow<T> {
  * [FlowFirebaseChildEvent]
  */
 @ExperimentalCoroutinesApi
+@SuppressLint("RestrictedApi")
 fun Query.collectDefaultChildEvent(): Flow<FlowFirebaseChildEvent<DataSnapshot>> = callbackFlow {
     val listener = object : ChildEventListener {
         override fun onCancelled(error: DatabaseError) {
