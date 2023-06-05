@@ -58,8 +58,7 @@ jobs:
           restore-keys: jars-
 
       - name: Build
-        run: |
-          - ./gradlew lint && ./gradlew assembleRelease
+        run: ./gradlew lint && ./gradlew assembleRelease
 
       - name: Make Github Release
         uses: softprops/action-gh-release@v1
