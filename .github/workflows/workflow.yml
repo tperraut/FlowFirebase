@@ -30,13 +30,16 @@ jobs:
     needs: tag
     runs-on: ubuntu-latest
     env:
-      VERSION: ${{ needs.tag.outputs.version }}
+      VERSION_NUM: ${{ needs.tag.outputs.version }}
     steps:
       - name: Checkout Repo
         uses: actions/checkout@v2
 
+      - name: Setup Env
+        run: echo "BUILD_NUM=${{ github.run_number }}" >> $GITHUB_ENV
+
       - name: Version Infos
-        run: echo $VERSION && echo '${{ needs.tag.outputs.changelog }}'
+        run: echo $VERSION_NUM && echo $BUILD_NUM && echo '${{ needs.tag.outputs.changelog }}'
 
       - name: Update Changelogs
         run: echo '${{ needs.tag.outputs.changelog }}' > release_note.txt
@@ -44,7 +47,7 @@ jobs:
       - name: Setup JAVA
         uses: actions/setup-java@v2
         with:
-          java-version: '11'
+          java-version: '12'
           distribution: 'zulu'
 
       - name: Cache dependencies
@@ -55,10 +58,15 @@ jobs:
           restore-keys: jars-
 
       - name: Download Dependencies
-        run: ./gradlew androidDependencies
+        if: ${{ github.ref == 'refs/heads/qa' }}
+        run: |
+          - ./gradlew androidDependencies
 
       - name: Build
-        run: ./gradlew lint && ./gradlew assembleRelease
+        if: ${{ github.ref == 'refs/heads/qa' }}
+        run: |
+          - ./gradlew lint
+          - ./gradlew assembleRelease
 
       - name: Make Github Release
         uses: softprops/action-gh-release@v1
