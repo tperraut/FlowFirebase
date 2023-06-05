@@ -1,16 +1,16 @@
-apply plugin: 'com.android.library'
-
-apply plugin: 'kotlin-android'
-
-apply plugin: 'maven-publish'
+plugins {
+    id 'com.android.library'
+    id 'kotlin-android'
+    id 'maven-publish'
+}
 
 def versionNumber = versionNum
 
 android {
-    compileSdkVersion 30
+    compileSdkVersion 33
     defaultConfig {
         minSdkVersion 19
-        targetSdkVersion 30
+        targetSdkVersion 33
         versionName versionNumber
         archivesBaseName = "${rootProject.name}-$versionNumber"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
@@ -21,16 +21,25 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
     }
-    afterEvaluate {
-        publishing {
-            publications {
-                release(MavenPublication) {
-                    from components.release
 
-                    groupId = "com.github.tperraut"
-                    artifactId = rootProject.name.toLowerCase()
-                    version = versionNumber
-                }
+    publishing {
+        singleVariant('release') {
+            withSourcesJar()
+            withJavadocJar()
+        }
+    }
+}
+
+// https://gist.github.com/Robyer/a6578e60127418b380ca133a1291f017?permalink_comment_id=4082108#gistcomment-4082108
+afterEvaluate {
+    publishing {
+        publications {
+            release(MavenPublication) {
+                from components.release
+
+                groupId = "com.github.tperraut"
+                artifactId = rootProject.name.toLowerCase()
+                version = versionNumber
             }
         }
     }
@@ -39,21 +48,21 @@ android {
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
     implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
-    implementation 'androidx.core:core-ktx:1.6.0'
+    implementation 'androidx.core:core-ktx:1.9.0'
 
     /* Firebase */
-    implementation platform('com.google.firebase:firebase-bom:28.0.1')
+    implementation platform('com.google.firebase:firebase-bom:29.0.3')
     implementation "com.google.firebase:firebase-auth"
     implementation "com.google.firebase:firebase-database"
     implementation "com.google.firebase:firebase-storage"
     implementation "com.google.firebase:firebase-config"
     implementation "com.google.firebase:firebase-functions"
     /* Coroutines */
-    implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-android:1.5.0'
+    implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-android:1.6.4'
 
     /* Test */
-    testImplementation 'junit:junit:4.12'
-    androidTestImplementation 'androidx.test.ext:junit:1.1.3'
-    androidTestImplementation 'androidx.test:runner:1.4.0'
-    androidTestImplementation 'androidx.test.espresso:espresso-core:3.4.0'
+    testImplementation 'junit:junit:4.13.2'
+    androidTestImplementation 'androidx.test.ext:junit:1.1.5'
+    androidTestImplementation 'androidx.test:runner:1.5.2'
+    androidTestImplementation 'androidx.test.espresso:espresso-core:3.5.1'
 }

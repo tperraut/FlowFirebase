@@ -44,7 +44,7 @@ jobs:
       - name: Setup JAVA
         uses: actions/setup-java@v2
         with:
-          java-version: '11'
+          java-version: '12'
           distribution: 'zulu'
 
       - name: Cache dependencies
@@ -53,9 +53,6 @@ jobs:
           path: ~/.gradle
           key: jars-{{ hashFiles("build.gradle") }}-{{ hashFiles("app/build.gradle") }}
           restore-keys: jars-
-
-      - name: Download Dependencies
-        run: ./gradlew androidDependencies
 
       - name: Build
         run: ./gradlew lint && ./gradlew assembleRelease
@@ -73,6 +70,6 @@ jobs:
         if: ${{ failure() || cancelled() }}
         env:
           GITHUB_TOKEN: ${{ github.token }}
-        uses: dev-drprasad/delete-tag-and-release@v0.2.0
+        uses: dev-drprasad/delete-tag-and-release@v0.2.1
         with:
           tag_name: ${{ needs.tag.outputs.tag }}
