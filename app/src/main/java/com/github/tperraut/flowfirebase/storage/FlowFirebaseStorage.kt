@@ -2,8 +2,11 @@ package com.github.tperraut.flowfirebase.storage
 
 import android.net.Uri
 import com.github.tperraut.flowfirebase.helpers.asFlow
-import com.google.firebase.storage.*
-import kotlinx.coroutines.ExperimentalCoroutinesApi
+import com.google.firebase.storage.FileDownloadTask
+import com.google.firebase.storage.StorageMetadata
+import com.google.firebase.storage.StorageReference
+import com.google.firebase.storage.StreamDownloadTask
+import com.google.firebase.storage.UploadTask
 import kotlinx.coroutines.flow.Flow
 import java.io.File
 import java.io.InputStream
@@ -15,7 +18,6 @@ import java.io.InputStream
  * @param maxDownloadSize the maximum [Byte] to be downloaded, if the result size exceed [maxDownloadSize] the flow task
  * will fail with [IndexOutOfBoundsException] cause
  */
-@ExperimentalCoroutinesApi
 fun StorageReference.getBytesAsFlow(maxDownloadSize: Long): Flow<ByteArray> {
     return getBytes(maxDownloadSize).asFlow()
 }
@@ -25,7 +27,6 @@ fun StorageReference.getBytesAsFlow(maxDownloadSize: Long): Flow<ByteArray> {
  * data [Uri] if the task succeed.
  * The Flow is cancelled if the Task failed.
  */
-@ExperimentalCoroutinesApi
 fun StorageReference.getDownloadUrlAsFlow(): Flow<Uri> = downloadUrl.asFlow()
 
 /**
@@ -34,7 +35,6 @@ fun StorageReference.getDownloadUrlAsFlow(): Flow<Uri> = downloadUrl.asFlow()
  * task succeed.
  * The Flow is cancelled if the Task failed.
  */
-@ExperimentalCoroutinesApi
 fun StorageReference.getFileAsFlow(destinationFile: File): Flow<FileDownloadTask.TaskSnapshot> {
     return getFile(destinationFile).asFlow()
 }
@@ -45,7 +45,6 @@ fun StorageReference.getFileAsFlow(destinationFile: File): Flow<FileDownloadTask
  * task succeed.
  * The Flow is cancelled if the Task failed.
  */
-@ExperimentalCoroutinesApi
 fun StorageReference.getFileAsFlow(destinationUri: Uri): Flow<FileDownloadTask.TaskSnapshot> {
     return getFile(destinationUri).asFlow()
 }
@@ -55,7 +54,6 @@ fun StorageReference.getFileAsFlow(destinationUri: Uri): Flow<FileDownloadTask.T
  * a [StorageMetadata] that contains the metadata of the pointed file if the task succeed.
  * The Flow is cancelled if the Task failed.
  */
-@ExperimentalCoroutinesApi
 fun StorageReference.getMetadataAsFlow(): Flow<StorageMetadata> = metadata.asFlow()
 
 /**
@@ -64,7 +62,6 @@ fun StorageReference.getMetadataAsFlow(): Flow<StorageMetadata> = metadata.asFlo
  * [StreamDownloadTask.TaskSnapshot.getStream] if the task succeed.
  * The Flow is cancelled if the Task failed.
  */
-@ExperimentalCoroutinesApi
 fun StorageReference.getStreamAsFlow(): Flow<StreamDownloadTask.TaskSnapshot> = stream.asFlow()
 
 /**
@@ -74,7 +71,6 @@ fun StorageReference.getStreamAsFlow(): Flow<StreamDownloadTask.TaskSnapshot> = 
  * @param processor the [StreamDownloadTask.StreamProcessor] that is responsible from reading the data from the
  * [InputStream]
  */
-@ExperimentalCoroutinesApi
 fun StorageReference.getStreamAsFlow(
     processor: StreamDownloadTask.StreamProcessor
 ): Flow<StreamDownloadTask.TaskSnapshot> = getStream(processor).asFlow()
@@ -85,7 +81,6 @@ fun StorageReference.getStreamAsFlow(
  * The Flow is cancelled if the Task failed.
  * @param byteArray the data as a [ByteArray] to store on Firebase
  */
-@ExperimentalCoroutinesApi
 fun StorageReference.putBytesAsFlow(byteArray: ByteArray): Flow<UploadTask.TaskSnapshot> {
     return putBytes(byteArray).asFlow()
 }
@@ -97,7 +92,6 @@ fun StorageReference.putBytesAsFlow(byteArray: ByteArray): Flow<UploadTask.TaskS
  * @param byteArray the data as a [ByteArray] to store on Firebase
  * @param metadata the custom metadata as a [StorageMetadata] object
  */
-@ExperimentalCoroutinesApi
 fun StorageReference.putBytesAsFlow(
     byteArray: ByteArray,
     metadata: StorageMetadata
@@ -109,7 +103,6 @@ fun StorageReference.putBytesAsFlow(
  * The Flow is cancelled if the Task failed.
  * @param uri the [Uri] of the file to upload
  */
-@ExperimentalCoroutinesApi
 fun StorageReference.putFileAsFlow(
     uri: Uri
 ): Flow<UploadTask.TaskSnapshot> = putFile(uri).asFlow()
@@ -121,7 +114,6 @@ fun StorageReference.putFileAsFlow(
  * @param uri the [Uri] of the file to upload
  * @param metadata the custom metadata as a [StorageMetadata] object
  */
-@ExperimentalCoroutinesApi
 fun StorageReference.putFileAsFlow(
     uri: Uri,
     metadata: StorageMetadata
@@ -135,7 +127,6 @@ fun StorageReference.putFileAsFlow(
  * @param metadata the custom metadata as a [StorageMetadata] object
  * @param existingUploadUri If set, an attempt is made to resume an existing upload session
  */
-@ExperimentalCoroutinesApi
 fun StorageReference.putFileAsFlow(
     uri: Uri,
     metadata: StorageMetadata,
@@ -148,7 +139,6 @@ fun StorageReference.putFileAsFlow(
  * The Flow is cancelled if the Task failed.
  * @param stream the stream of data to upload
  */
-@ExperimentalCoroutinesApi
 fun StorageReference.putStreamAsFlow(
     stream: InputStream
 ): Flow<UploadTask.TaskSnapshot> = putStream(stream).asFlow()
@@ -160,13 +150,12 @@ fun StorageReference.putStreamAsFlow(
  * @param stream the stream of data to upload
  * @param metadata the custom metadata as a [StorageMetadata] object
  */
-@ExperimentalCoroutinesApi
 fun StorageReference.putStreamAsFlow(
     stream: InputStream,
     metadata: StorageMetadata
 ): Flow<UploadTask.TaskSnapshot> = putStream(stream, metadata).asFlow()
 
-@ExperimentalCoroutinesApi
+
 fun StorageReference.updateMetadataAsFlow(metadata: StorageMetadata): Flow<StorageMetadata> {
     return updateMetadata(metadata).asFlow()
 }
@@ -175,5 +164,4 @@ fun StorageReference.updateMetadataAsFlow(metadata: StorageMetadata): Flow<Stora
  * Delete data pointed by this [StorageReference] and convert the Google Task to a [Flow] emitting [Void]
  * The Flow is cancelled if the Task failed.
  */
-@ExperimentalCoroutinesApi
 fun StorageReference.deleteAsFlow(): Flow<Void> = delete().asFlow()

@@ -1,7 +1,6 @@
 package com.github.tperraut.flowfirebase.helpers
 
 import com.google.android.gms.tasks.Task
-import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.cancel
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.callbackFlow
@@ -11,7 +10,6 @@ import kotlinx.coroutines.flow.callbackFlow
  * failure listener and emitting only once when the Task succeed before completing or cancelling
  * if the Task failed
  */
-@ExperimentalCoroutinesApi
 fun <TResult> Task<TResult>.asFlow() = callbackFlow<TResult> {
     addOnSuccessListener {
         safeOffer(it)

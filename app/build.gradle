@@ -7,10 +7,22 @@ plugins {
 def versionNumber = versionNum
 
 android {
-    compileSdkVersion 33
+    namespace 'com.github.tperraut.flowfirebase'
+    compileSdk 34
+
+
+    compileOptions {
+        sourceCompatibility = JavaVersion.VERSION_1_8
+        targetCompatibility = JavaVersion.VERSION_1_8
+    }
+
+    kotlinOptions {
+        jvmTarget = "1.8"
+    }
+
     defaultConfig {
         minSdkVersion 19
-        targetSdkVersion 33
+        targetSdkVersion 34
         versionName versionNumber
         archivesBaseName = "${rootProject.name}-$versionNumber"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
@@ -48,17 +60,17 @@ afterEvaluate {
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
     implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
-    implementation 'androidx.core:core-ktx:1.9.0'
+    implementation "androidx.core:core-ktx:1.12.0"
 
     /* Firebase */
-    implementation platform('com.google.firebase:firebase-bom:29.0.3')
+    implementation platform('com.google.firebase:firebase-bom:32.7.2')
     implementation "com.google.firebase:firebase-auth"
     implementation "com.google.firebase:firebase-database"
     implementation "com.google.firebase:firebase-storage"
     implementation "com.google.firebase:firebase-config"
     implementation "com.google.firebase:firebase-functions"
     /* Coroutines */
-    implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-android:1.6.4'
+    implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-android:1.8.0'
 
     /* Test */
     testImplementation 'junit:junit:4.13.2'
