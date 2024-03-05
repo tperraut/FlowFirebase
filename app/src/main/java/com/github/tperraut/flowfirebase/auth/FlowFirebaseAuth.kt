@@ -2,8 +2,10 @@ package com.github.tperraut.flowfirebase.auth
 
 import com.github.tperraut.flowfirebase.helpers.asFlow
 import com.github.tperraut.flowfirebase.helpers.safeOffer
-import com.google.firebase.auth.*
-import kotlinx.coroutines.ExperimentalCoroutinesApi
+import com.google.firebase.auth.AuthCredential
+import com.google.firebase.auth.AuthResult
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.FirebaseUser
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
@@ -12,7 +14,6 @@ import kotlinx.coroutines.flow.callbackFlow
  * Sign in anonymously on Firebase and convert the Google Task to a [Flow] emitting [AuthResult] if the sign in
  * succeed before completing or cancelling if it failed
  */
-@ExperimentalCoroutinesApi
 fun FirebaseAuth.signInAnonymouslyAsFlow(): Flow<AuthResult> = signInAnonymously().asFlow()
 
 /**
@@ -21,8 +22,10 @@ fun FirebaseAuth.signInAnonymouslyAsFlow(): Flow<AuthResult> = signInAnonymously
  * @param email the user email
  * @param password the user password
  */
-@ExperimentalCoroutinesApi
-fun FirebaseAuth.signInWithEmailAndPasswordAsFlow(email: String, password: String): Flow<AuthResult> {
+fun FirebaseAuth.signInWithEmailAndPasswordAsFlow(
+    email: String,
+    password: String
+): Flow<AuthResult> {
     return signInWithEmailAndPassword(email, password).asFlow()
 }
 
@@ -31,7 +34,6 @@ fun FirebaseAuth.signInWithEmailAndPasswordAsFlow(email: String, password: Strin
  * if the sign in succeed before completing or cancelling if it failed
  * @param credential the user [AuthCredential]
  */
-@ExperimentalCoroutinesApi
 fun FirebaseAuth.signInWithCredentialAsFlow(credential: AuthCredential): Flow<AuthResult> {
     return signInWithCredential(credential).asFlow()
 }
@@ -41,7 +43,6 @@ fun FirebaseAuth.signInWithCredentialAsFlow(credential: AuthCredential): Flow<Au
  * in succeed before completing or cancelling if it failed
  * @param token the user token
  */
-@ExperimentalCoroutinesApi
 fun FirebaseAuth.signInWithCustomTokenAsFlow(token: String): Flow<AuthResult> {
     return signInWithCustomToken(token).asFlow()
 }
@@ -52,19 +53,11 @@ fun FirebaseAuth.signInWithCustomTokenAsFlow(token: String): Flow<AuthResult> {
  * @param email the user email
  * @param password the user password
  */
-@ExperimentalCoroutinesApi
-fun FirebaseAuth.createUserWithEmailAndPasswordAsFlow(email: String, password: String): Flow<AuthResult> {
+fun FirebaseAuth.createUserWithEmailAndPasswordAsFlow(
+    email: String,
+    password: String
+): Flow<AuthResult> {
     return createUserWithEmailAndPassword(email, password).asFlow()
-}
-
-/**
- * Ask Firebase for the user sign in method and convert the Google Task to a [Flow] emitting [SignInMethodQueryResult]
- * if the task succeed before completing or cancelling if it failed
- * @param email the user email
- */
-@ExperimentalCoroutinesApi
-fun FirebaseAuth.fetchSignInMethodForEmailAsFlow(email: String): Flow<SignInMethodQueryResult> {
-    return fetchSignInMethodsForEmail(email).asFlow()
 }
 
 /**
@@ -72,7 +65,6 @@ fun FirebaseAuth.fetchSignInMethodForEmailAsFlow(email: String): Flow<SignInMeth
  * before completing or cancelling if it failed
  * @param email the user email
  */
-@ExperimentalCoroutinesApi
 fun FirebaseAuth.sendPasswordResetEmailAsFlow(email: String): Flow<Void> {
     return sendPasswordResetEmail(email).asFlow()
 }
@@ -80,7 +72,6 @@ fun FirebaseAuth.sendPasswordResetEmailAsFlow(email: String): Flow<Void> {
 /**
  * Observe the [FirebaseUser] changes as [Flow]. A null value meaning that the user is not sign in (ie disconnected)
  */
-@ExperimentalCoroutinesApi
 fun FirebaseAuth.collectAuthState(): Flow<FirebaseUser?> = callbackFlow {
     val listener = FirebaseAuth.AuthStateListener { auth -> safeOffer(auth.currentUser) }
     addAuthStateListener(listener)

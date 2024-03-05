@@ -6,6 +6,8 @@ import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseException
 import com.google.firebase.database.GenericTypeIndicator
 
+val DSM = DataSnapshotMapper
+
 object DataSnapshotMapper {
 
     /**
@@ -16,10 +18,14 @@ object DataSnapshotMapper {
     inline fun <reified T> of(): (DataSnapshot) -> T = { dataSnapshot ->
         try {
             val value = dataSnapshot.getValue(T::class.java)
-            value ?: throw FlowFirebaseDataCastException("Unable to cast $dataSnapshot to ${T::class.java.simpleName}")
+            value
+                ?: throw FlowFirebaseDataCastException("Unable to cast $dataSnapshot to ${T::class.java.simpleName}")
             value
         } catch (e: DatabaseException) {
-            throw FlowFirebaseDataCastException("Unable to cast $dataSnapshot to ${T::class.java.simpleName}", e)
+            throw FlowFirebaseDataCastException(
+                "Unable to cast $dataSnapshot to ${T::class.java.simpleName}",
+                e
+            )
         }
     }
 
@@ -86,15 +92,20 @@ object DataSnapshotMapper {
      * @return a lambda to be use with FlowFirebaseDatabase functions
      * @throws FlowFirebaseDataCastException if the converted value is null or a [DatabaseException] is thrown
      */
-    fun <T> of(genericTypeIndicator: GenericTypeIndicator<T>): (DataSnapshot) -> T = { dataSnapshot ->
-        try {
-            val value = dataSnapshot.getValue(genericTypeIndicator)
-            value ?: throw FlowFirebaseDataCastException("Unable to cast $dataSnapshot with $genericTypeIndicator")
-            value
-        } catch (e: DatabaseException) {
-            throw FlowFirebaseDataCastException("Unable to cast $dataSnapshot with $genericTypeIndicator", e)
+    fun <T> of(genericTypeIndicator: GenericTypeIndicator<T>): (DataSnapshot) -> T =
+        { dataSnapshot ->
+            try {
+                val value = dataSnapshot.getValue(genericTypeIndicator)
+                value
+                    ?: throw FlowFirebaseDataCastException("Unable to cast $dataSnapshot with $genericTypeIndicator")
+                value
+            } catch (e: DatabaseException) {
+                throw FlowFirebaseDataCastException(
+                    "Unable to cast $dataSnapshot with $genericTypeIndicator",
+                    e
+                )
+            }
         }
-    }
 
     /**
      * Try to convert a [DataSnapshot] to a [FlowFirebaseChildEvent] of type T
