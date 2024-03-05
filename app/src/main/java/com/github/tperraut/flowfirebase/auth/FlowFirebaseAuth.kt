@@ -6,6 +6,7 @@ import com.google.firebase.auth.AuthCredential
 import com.google.firebase.auth.AuthResult
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
+import com.google.firebase.auth.SignInMethodQueryResult
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
@@ -58,6 +59,15 @@ fun FirebaseAuth.createUserWithEmailAndPasswordAsFlow(
     password: String
 ): Flow<AuthResult> {
     return createUserWithEmailAndPassword(email, password).asFlow()
+}
+
+/**
+ * Ask Firebase for the user sign in method and convert the Google Task to a [Flow] emitting [SignInMethodQueryResult]
+ * if the task succeed before completing or cancelling if it failed
+ * @param email the user email
+ */
+fun FirebaseAuth.fetchSignInMethodForEmailAsFlow(email: String): Flow<SignInMethodQueryResult> {
+    return fetchSignInMethodsForEmail(email).asFlow()
 }
 
 /**
