@@ -3,7 +3,6 @@ package com.github.tperraut.flowfirebase.functions
 import com.github.tperraut.flowfirebase.helpers.asFlow
 import com.google.firebase.functions.FirebaseFunctions
 import com.google.firebase.functions.HttpsCallableResult
-import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
 import java.util.concurrent.TimeUnit
 
@@ -15,7 +14,6 @@ import java.util.concurrent.TimeUnit
  * @param timeOutUnits the [timeOut] unit
  * @return an [HttpsCallableResult] containing the result of the function called
  */
-@ExperimentalCoroutinesApi
 fun FirebaseFunctions.getHttpsCallable(
     name: String,
     data: Any? = null,

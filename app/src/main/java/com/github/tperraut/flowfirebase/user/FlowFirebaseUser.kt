@@ -5,13 +5,14 @@ import com.google.firebase.auth.AuthCredential
 import com.google.firebase.auth.AuthResult
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.auth.UserProfileChangeRequest
-import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
 
-@ExperimentalCoroutinesApi
+val FFUser = FlowFirebaseUser
+
 object FlowFirebaseUser {
 
-    fun updateEmail(firebaseUser: FirebaseUser, email: String): Flow<Void> = firebaseUser.updateEmail(email).asFlow()
+    fun updateEmail(firebaseUser: FirebaseUser, email: String): Flow<Void> =
+        firebaseUser.verifyBeforeUpdateEmail(email).asFlow()
 
     fun updatePassword(firebaseUser: FirebaseUser, password: String): Flow<Void> {
         return firebaseUser.updatePassword(password).asFlow()
@@ -27,7 +28,10 @@ object FlowFirebaseUser {
         return firebaseUser.reauthenticate(credential).asFlow()
     }
 
-    fun linkWithCredential(firebaseUser: FirebaseUser, credential: AuthCredential): Flow<AuthResult> {
+    fun linkWithCredential(
+        firebaseUser: FirebaseUser,
+        credential: AuthCredential
+    ): Flow<AuthResult> {
         return firebaseUser.linkWithCredential(credential).asFlow()
     }
 }
